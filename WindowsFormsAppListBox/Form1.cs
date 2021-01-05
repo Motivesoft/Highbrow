@@ -79,6 +79,9 @@ namespace WindowsFormsAppListBox
             catch ( Exception ex )
             {
                 MessageBox.Show( $"Failed: {ex.Message}" );
+
+                // Make sure we go back to last good value
+                Update( listView1.Tag as string );
             }
         }
 
