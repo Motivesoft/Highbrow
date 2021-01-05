@@ -36,8 +36,6 @@ namespace WindowsFormsAppListBox
                 return;
             }
 
-            listView1.Items.Clear();
-
             Task.Run( () =>
             {
                 Update( path );
@@ -81,10 +79,14 @@ namespace WindowsFormsAppListBox
 
             try
             {
-                textBox1.Text = path;
-                listView1.Tag = path;
+                var from = listView1.Tag as string;
+                var focused = false;
 
                 listView1.BeginUpdate();
+                listView1.Items.Clear();
+
+                textBox1.Text = path;
+                listView1.Tag = path;
 
                 foreach ( var dir in dirs )
                 {
@@ -98,6 +100,13 @@ namespace WindowsFormsAppListBox
                     lvi.Tag = dir;
 
                     listView1.Items.Add( lvi );
+
+                    if ( dir.FullName == from )
+                    {
+                        focused = true;
+                        lvi.Focused = true;
+                        lvi.Selected = true; 
+                    }
                 }
 
                 foreach ( var file in files )
@@ -112,6 +121,11 @@ namespace WindowsFormsAppListBox
                     lvi.Tag = file;
 
                     listView1.Items.Add( lvi );
+                }
+
+                if ( !focused && listView1.Items.Count > 0 )
+                {
+                    listView1.Items[ 0 ].Focused = true;
                 }
             }
             finally 
@@ -148,6 +162,11 @@ namespace WindowsFormsAppListBox
                 {
                     PostUpdate( textBox1.Text );
                 }
+            }
+            else if ( e.KeyCode == Keys.Down )
+            {
+                listView1.Focus();
+                listView1.FocusedItem.Selected = true;
             }
         }
     }
