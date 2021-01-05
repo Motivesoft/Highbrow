@@ -15,17 +15,35 @@ namespace WindowsFormsAppListBox
     {
         private readonly ImageList smallImageList = new ImageList();
 
-        public Form1()
+        private string initialPath = Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments );
+
+        public Form1( string[] args )
         {
             InitializeComponent();
 
             // We will use this as a cache that we build over time
             listView1.SmallImageList = smallImageList;
+
+            if ( args.Length > 0 )
+            {
+                // Allow a path on the command line, but validate it before we use it
+                if ( Directory.Exists( args[ 0 ] ) )
+                {
+                    initialPath = args[ 0 ];
+                }
+                else
+                {
+                    Invoke( (MethodInvoker) delegate 
+                    {
+                        MessageBox.Show( $"{args[0]} is not a valid path" );
+                    } );
+                }
+            }
         }
 
         private void Form1_Shown( object sender, EventArgs e )
         {
-            PostUpdate( Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments ) );
+            PostUpdate( initialPath );
         }
 
         private void PostUpdate( string path )

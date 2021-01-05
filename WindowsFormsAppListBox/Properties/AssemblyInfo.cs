@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle( "WindowsFormsAppListBox" )]
-[assembly: AssemblyDescription( "" )]
+[assembly: AssemblyTitle( "Highbrow" )]
+[assembly: AssemblyDescription( "High-level file browser" )]
 [assembly: AssemblyConfiguration( "" )]
-[assembly: AssemblyCompany( "" )]
-[assembly: AssemblyProduct( "WindowsFormsAppListBox" )]
+[assembly: AssemblyCompany( "Motivesoft" )]
+[assembly: AssemblyProduct( "Highbrow" )]
 [assembly: AssemblyCopyright( "Copyright ©  2021" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
