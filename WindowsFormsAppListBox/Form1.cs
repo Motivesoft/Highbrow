@@ -44,16 +44,32 @@ namespace WindowsFormsAppListBox
 
         private void Update( string path )
         {
+            var fullPath = path;
             try
             {
+                // Add a little convenience thing of ~ for home directory - make it an option?
+                if ( fullPath.StartsWith( "~" ) )
+                {
+                    // Prune following slashes - but only in the case of ~
+                    var remnant = fullPath.Substring( 1 );
+                    while ( remnant.StartsWith( "/" ) || remnant.StartsWith( @"\" ) )
+                    {
+                        remnant = remnant.Substring( 1 );
+                    }
+                    fullPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), remnant );
+                }
+
+                // Do we really want to do this? I guess so - make it an option?
+                fullPath = fullPath.Replace( "/", @"\" );
+
                 var dirs = new List<DirectoryInfo>();
-                foreach ( var dir in Directory.GetDirectories( path ) )
+                foreach ( var dir in Directory.GetDirectories( fullPath ) )
                 {
                     dirs.Add( new DirectoryInfo( dir ) );
                 }
 
                 var files = new List<FileInfo>();
-                foreach ( var file in Directory.GetFiles( path ) )
+                foreach ( var file in Directory.GetFiles( fullPath ) )
                 {
                     files.Add( new FileInfo( file ) );
                 }
@@ -79,6 +95,8 @@ namespace WindowsFormsAppListBox
 
             try
             {
+                UseWaitCursor = true;
+
                 var from = listView1.Tag as string;
                 var focused = false;
 
@@ -131,6 +149,8 @@ namespace WindowsFormsAppListBox
             finally 
             { 
                 listView1.EndUpdate();
+
+                UseWaitCursor = false;
             }
         }
 
@@ -152,6 +172,11 @@ namespace WindowsFormsAppListBox
                 var path = listView1.Tag as string;
                 PostUpdate( Directory.GetParent( path ).FullName );
             }
+            else if ( e.KeyCode == Keys.D && e.Alt )
+            {
+                textBox1.Focus();
+                textBox1.SelectAll();
+            }
         }
 
         private void textBox1_KeyDown( object sender, KeyEventArgs e )
@@ -167,6 +192,10 @@ namespace WindowsFormsAppListBox
             {
                 listView1.Focus();
                 listView1.FocusedItem.Selected = true;
+            }
+            else if ( e.KeyCode == Keys.D && e.Alt )
+            {
+                textBox1.SelectAll();
             }
         }
     }
