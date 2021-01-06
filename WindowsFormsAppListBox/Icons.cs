@@ -41,6 +41,26 @@ namespace Highbrow
             // Do nothing
         }
 
+        public static Icon GetPaddedIcon( Icon ico )
+        {
+            var bmp = new Bitmap( 20, 20 );
+
+            var iconBmp = ico.ToBitmap();
+
+            for ( int x = 0; x < 16; x++ )
+            {
+                for ( int y = 0; y < 16; y++ )
+                {
+                    bmp.SetPixel( x + 1, y + 1, iconBmp.GetPixel( x, y ) );
+                }
+            }
+
+            var hIcon = bmp.GetHicon();
+            Icon icon = (Icon) Icon.FromHandle( hIcon ).Clone();
+            Win32.DestroyIcon( hIcon );
+            return icon;
+        }
+
         public static Icon GetSmallIcon( string fileName )
         {
             return GetIcon( fileName, Win32.SHGFI_SMALLICON );
@@ -56,7 +76,7 @@ namespace Highbrow
             SHFILEINFO shinfo = new SHFILEINFO();
             IntPtr hImgSmall = Win32.SHGetFileInfo( fileName, 0, ref shinfo, (uint) Marshal.SizeOf( shinfo ), Win32.SHGFI_ICON | flags );
 
-            Icon icon = (Icon) System.Drawing.Icon.FromHandle( shinfo.hIcon ).Clone();
+            Icon icon = (Icon) Icon.FromHandle( shinfo.hIcon ).Clone();
             Win32.DestroyIcon( shinfo.hIcon );
             return icon;
         }

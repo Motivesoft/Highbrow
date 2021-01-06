@@ -42,7 +42,7 @@ namespace Highbrow
 
             // We will use this as a cache that we build over time
             listView1.SmallImageList = smallImageList;
-
+            listView1.SmallImageList.ImageSize = new Size( 20, 20 );
             if ( args.Length > 0 )
             {
                 // Allow a path on the command line, but validate it before we use it
@@ -152,7 +152,8 @@ namespace Highbrow
 
                     if ( !smallImageList.Images.ContainsKey( dir.FullName ) )
                     {
-                        smallImageList.Images.Add( dir.FullName, Icons.GetSmallIcon( dir.FullName ) );
+//                        smallImageList.Images.Add( dir.FullName, Icons.GetSmallIcon( dir.FullName ) );
+                        smallImageList.Images.Add( dir.FullName, Icons.GetPaddedIcon( Icons.GetSmallIcon( dir.FullName ) ) );
                     }
                     lvi.ImageKey = dir.FullName;
                     lvi.Tag = dir;
@@ -177,7 +178,8 @@ namespace Highbrow
 
                     if ( !smallImageList.Images.ContainsKey( file.FullName ) )
                     {
-                        smallImageList.Images.Add( file.FullName, Icons.GetSmallIcon( file.FullName ) );
+                        //smallImageList.Images.Add( file.FullName, Icons.GetSmallIcon( file.FullName ) );
+                        smallImageList.Images.Add( file.FullName, Icons.GetPaddedIcon( Icons.GetSmallIcon( file.FullName ) ) );
                     }
                     lvi.ImageKey = file.FullName;
                     lvi.Tag = file;
