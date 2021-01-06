@@ -1,5 +1,5 @@
 ﻿
-namespace WindowsFormsAppListBox
+namespace Highbrow
 {
     partial class Form1
     {
@@ -82,10 +82,12 @@ namespace WindowsFormsAppListBox
             // 
             this.columnHeader3.Text = "Size";
             this.columnHeader3.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.columnHeader3.Width = 75;
             // 
             // columnHeader4
             // 
             this.columnHeader4.Text = "Type";
+            this.columnHeader4.Width = 200;
             // 
             // textBox1
             // 

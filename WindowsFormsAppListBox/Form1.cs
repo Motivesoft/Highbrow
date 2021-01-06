@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace WindowsFormsAppListBox
+namespace Highbrow
 {
     /// <summary>
     /// Intentions:
@@ -32,7 +32,7 @@ namespace WindowsFormsAppListBox
     {
         private readonly ImageList smallImageList = new ImageList();
 
-        private readonly Dictionary<string, string> FileTypes = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> FileTypeCache = new Dictionary<string, string>();
 
         private string initialPath = Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments );
 
@@ -273,38 +273,19 @@ namespace WindowsFormsAppListBox
                 return "File";
             }
 
-            if ( FileTypes.ContainsKey( extension ) )
+            if ( !FileTypeCache.ContainsKey( extension ) )
             {
-                return FileTypes[ extension ];
-            }
+                // Default, but then try and improve
+                FileTypeCache[ extension ] = extension;
 
-            // Default, but then try and improve
-            FileTypes[ extension ] = extension;
-
-            using ( RegistryKey key = Registry.ClassesRoot.OpenSubKey( extension ) )
-            {
-                if ( key != null )
+                var desc = FileTypes.GetFileTypeDescription( extension );
+                if ( !string.IsNullOrEmpty( desc ) )
                 {
-                    var type = key.GetValue( "" );
-                    if ( type != null )
-                    {
-                        using ( RegistryKey typeKey = Registry.ClassesRoot.OpenSubKey( type as string ) )
-                        {
-                            if ( typeKey != null )
-                            {
-                                var typeString = typeKey.GetValue( "" );
-                                if ( typeString != null )
-                                {
-                                    FileTypes[ extension ] = typeString as string;
-                                    return typeString as string;
-                                }
-                            }
-                        }
-                    }
+                    FileTypeCache[ extension ] = desc;
                 }
             }
 
-            return FileTypes[ extension ];
+            return FileTypeCache[ extension ];
         }
     }
 }
