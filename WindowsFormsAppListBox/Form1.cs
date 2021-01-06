@@ -210,10 +210,20 @@ namespace Highbrow
             {
                 if ( listView1.SelectedItems.Count > 0 )
                 {
-                    var lvi = listView1.SelectedItems[ 0 ];
-                    if ( lvi.Tag is DirectoryInfo )
+                    var lvi0 = listView1.SelectedItems[ 0 ];
+                    if ( lvi0.Tag is DirectoryInfo )
                     {
-                        PostUpdate( ( lvi.Tag as DirectoryInfo ).FullName );
+                        PostUpdate( ( lvi0.Tag as DirectoryInfo ).FullName );
+                    }
+                    else if ( e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return )
+                    {
+                        foreach ( ListViewItem lvi in listView1.SelectedItems )
+                        {
+                            if ( lvi.Tag is FileInfo )
+                            {
+                                System.Diagnostics.Process.Start( ( lvi.Tag as FileInfo ).FullName );
+                            }
+                        }
                     }
                 }
             }
