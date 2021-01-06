@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -30,6 +31,8 @@ namespace WindowsFormsAppListBox
     public partial class Form1 : Form
     {
         private readonly ImageList smallImageList = new ImageList();
+
+        private readonly Dictionary<string, string> FileTypes = new Dictionary<string, string>();
 
         private string initialPath = Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments );
 
@@ -156,6 +159,7 @@ namespace WindowsFormsAppListBox
 
                     lvi.SubItems.Add( GetDateString( dir.LastWriteTime ) );
                     lvi.SubItems.Add( "" ); // Size
+                    lvi.SubItems.Add( "File folder" );
 
                     listView1.Items.Add( lvi );
 
@@ -180,7 +184,8 @@ namespace WindowsFormsAppListBox
 
                     lvi.SubItems.Add( GetDateString( file.LastWriteTime ) );
                     lvi.SubItems.Add( GetSizeString( file.Length ) ); // Size
-
+                    lvi.SubItems.Add( GetTypeString( file.Extension ) );
+                    
                     listView1.Items.Add( lvi );
                 }
 
@@ -250,15 +255,56 @@ namespace WindowsFormsAppListBox
             }
         }
 
-        private static string GetDateString( DateTime datetime )
+        private string GetDateString( DateTime datetime )
         {
             return $"{datetime.ToShortDateString()} {datetime.ToShortTimeString()}";
         }
 
-        private static string GetSizeString( long size )
+        private string GetSizeString( long size )
         {
             var kb = (double) size / 1024;
             return $"{Math.Ceiling(kb):n0} KB";
+        }
+
+        private string GetTypeString( string extension )
+        {
+            if ( string.IsNullOrEmpty( extension ) )
+            {
+                return "File";
+            }
+
+            if ( FileTypes.ContainsKey( extension ) )
+            {
+                return FileTypes[ extension ];
+            }
+
+            // Default, but then try and improve
+            FileTypes[ extension ] = extension;
+
+            using ( RegistryKey key = Registry.ClassesRoot.OpenSubKey( extension ) )
+            {
+                if ( key != null )
+                {
+                    var type = key.GetValue( "" );
+                    if ( type != null )
+                    {
+                        using ( RegistryKey typeKey = Registry.ClassesRoot.OpenSubKey( type as string ) )
+                        {
+                            if ( typeKey != null )
+                            {
+                                var typeString = typeKey.GetValue( "" );
+                                if ( typeString != null )
+                                {
+                                    FileTypes[ extension ] = typeString as string;
+                                    return typeString as string;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return FileTypes[ extension ];
         }
     }
 }
