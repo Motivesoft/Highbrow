@@ -75,16 +75,17 @@ namespace WindowsFormsAppListBox
             // 
             // columnHeader2
             // 
-            this.columnHeader2.Text = "Name";
+            this.columnHeader2.Text = "Date modified";
             this.columnHeader2.Width = 100;
             // 
             // columnHeader3
             // 
             this.columnHeader3.Text = "Size";
+            this.columnHeader3.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // columnHeader4
             // 
-            this.columnHeader4.Text = "Date";
+            this.columnHeader4.Text = "Type";
             // 
             // textBox1
             // 
@@ -94,6 +95,7 @@ namespace WindowsFormsAppListBox
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(800, 20);
             this.textBox1.TabIndex = 0;
+            this.textBox1.WordWrap = false;
             this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
             // Form1

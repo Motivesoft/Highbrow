@@ -11,6 +11,22 @@ using System.Windows.Forms;
 
 namespace WindowsFormsAppListBox
 {
+    /// <summary>
+    /// Intentions:
+    /// <list type="bullet">
+    /// <item>Rename</item>
+    /// <item>Delete</item>
+    /// <item>Search</item>
+    /// <item>Filter</item>
+    /// <item>Open Terminal here</item>
+    /// <item>Open Pane</item>
+    /// <item>Close Pane</item>
+    /// <item>Dock/Undock Pane?</item>
+    /// </list>
+    /// 
+    /// Completed:
+    /// 
+    /// </summary>
     public partial class Form1 : Form
     {
         private readonly ImageList smallImageList = new ImageList();
@@ -138,6 +154,9 @@ namespace WindowsFormsAppListBox
                     lvi.ImageKey = dir.FullName;
                     lvi.Tag = dir;
 
+                    lvi.SubItems.Add( GetDateString( dir.LastWriteTime ) );
+                    lvi.SubItems.Add( "" ); // Size
+
                     listView1.Items.Add( lvi );
 
                     if ( dir.FullName == from )
@@ -158,6 +177,9 @@ namespace WindowsFormsAppListBox
                     }
                     lvi.ImageKey = file.FullName;
                     lvi.Tag = file;
+
+                    lvi.SubItems.Add( GetDateString( file.LastWriteTime ) );
+                    lvi.SubItems.Add( GetSizeString( file.Length ) ); // Size
 
                     listView1.Items.Add( lvi );
                 }
@@ -191,7 +213,15 @@ namespace WindowsFormsAppListBox
             else if ( e.KeyCode == Keys.Back || e.KeyCode == Keys.Left )
             {
                 var path = listView1.Tag as string;
-                PostUpdate( Directory.GetParent( path ).FullName );
+                var parent = Directory.GetParent( path );
+                if ( parent != null )
+                {
+                    PostUpdate( parent.FullName );
+                }
+                else
+                {
+                    // Get roots?
+                }
             }
             else if ( e.KeyCode == Keys.D && e.Alt )
             {
@@ -218,6 +248,17 @@ namespace WindowsFormsAppListBox
             {
                 textBox1.SelectAll();
             }
+        }
+
+        private static string GetDateString( DateTime datetime )
+        {
+            return $"{datetime.ToShortDateString()} {datetime.ToShortTimeString()}";
+        }
+
+        private static string GetSizeString( long size )
+        {
+            var kb = (double) size / 1024;
+            return $"{Math.Ceiling(kb):n0} KB";
         }
     }
 }
